@@ -12,6 +12,7 @@ use App\Filament\Widgets\TicketsByType;
 use App\Filament\Widgets\TicketTimeLogged;
 use App\Filament\Widgets\UserTimeLogged;
 use Filament\Pages\Dashboard as BasePage;
+use App\Filament\Widgets\GoToProjects;
 
 class Dashboard extends BasePage
 {
@@ -26,9 +27,10 @@ class Dashboard extends BasePage
     {
         return [
             FavoriteProjects::class,
+            GoToProjects::class,
+            LatestProjects::class,
             LatestActivities::class,
             LatestComments::class,
-            LatestProjects::class,
             LatestTickets::class,
             TicketsByPriority::class,
             TicketsByType::class,

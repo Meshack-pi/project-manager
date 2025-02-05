@@ -18,13 +18,21 @@ class Project extends Model implements HasMedia
 
     protected $fillable = [
         'name', 'description', 'status_id', 'owner_id', 'ticket_prefix',
-        'status_type', 'type'
+        'status_type', 'type','is_hrp_project', 'activities', 'project_donor', 'other_donors',
+        'budget', 'budget_currency', 'hrp_code', 'has_partners', 'activity_type', 'project_code',
+        'start_date', 'end_date','partner_id'
     ];
 
     protected $appends = [
         'cover'
     ];
-
+    protected $casts = [
+        'activities' => 'array',
+        'other_donors' => 'array',
+        'is_hrp_project' => 'boolean',
+        'has_partners' => 'boolean',
+    ];
+    
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id', 'id');
