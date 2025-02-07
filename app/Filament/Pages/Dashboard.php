@@ -26,9 +26,9 @@ class Dashboard extends BasePage
     protected function getWidgets(): array
     {
         return [
-            FavoriteProjects::class,
             GoToProjects::class,
             LatestProjects::class,
+            FavoriteProjects::class,
             LatestActivities::class,
             LatestComments::class,
             LatestTickets::class,
