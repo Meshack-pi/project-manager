@@ -47,47 +47,46 @@ class ProjectResource extends Resource
     {
         return $form
             ->schema([
-                // Existing card with basic project details
+                // Card for basic project details
                 Forms\Components\Card::make()
                     ->schema([
                         Forms\Components\Grid::make()
-                            ->columns(3)
+                            ->columns(['default' => 1, 'md' => 3])
                             ->schema([
                                 Forms\Components\SpatieMediaLibraryFileUpload::make('cover')
                                     ->label(__('Cover image'))
                                     ->image()
                                     ->helperText(__('If not selected, an image will be generated based on the project name'))
-                                    ->columnSpan(1),
-    
+                                    ->columnSpan(['default' => 1, 'md' => 1]),
+
                                 Forms\Components\Grid::make()
-                                    ->columnSpan(2)
+                                    ->columnSpan(['default' => 1, 'md' => 2])
                                     ->schema([
                                         Forms\Components\Grid::make()
-                                            ->columnSpan(2)
-                                            ->columns(12)
+                                            ->columns(['default' => 1, 'md' => 12])
                                             ->schema([
                                                 Forms\Components\TextInput::make('name')
                                                     ->label(__('Project name'))
                                                     ->required()
-                                                    ->columnSpan(10)
+                                                    ->columnSpan(['default' => 1, 'md' => 10])
                                                     ->maxLength(255),
-    
+
                                                 Forms\Components\TextInput::make('ticket_prefix')
                                                     ->label(__('Ticket prefix'))
                                                     ->maxLength(3)
-                                                    ->columnSpan(2)
+                                                    ->columnSpan(['default' => 1, 'md' => 2])
                                                     ->unique(Project::class, column: 'ticket_prefix', ignoreRecord: true)
                                                     ->disabled(fn($record) => $record && $record->tickets()->count() != 0)
                                                     ->required(),
                                             ]),
-    
+
                                         Forms\Components\Select::make('owner_id')
                                             ->label(__('Project owner'))
                                             ->searchable()
                                             ->options(fn() => User::all()->pluck('name', 'id')->toArray())
                                             ->default(fn() => auth()->user()->id)
                                             ->required(),
-    
+
                                         Forms\Components\Select::make('status_id')
                                             ->label(__('Project status'))
                                             ->searchable()
@@ -95,11 +94,11 @@ class ProjectResource extends Resource
                                             ->default(fn() => ProjectStatus::where('is_default', true)->first()?->id)
                                             ->required(),
                                     ]),
-    
+
                                 Forms\Components\RichEditor::make('description')
                                     ->label(__('Project description'))
-                                    ->columnSpan(3),
-    
+                                    ->columnSpan(['default' => 1, 'md' => 3]),
+
                                 Forms\Components\Select::make('type')
                                     ->label(__('Project type'))
                                     ->searchable()
@@ -118,7 +117,7 @@ class ProjectResource extends Resource
                                         return '';
                                     })
                                     ->required(),
-    
+
                                 Forms\Components\Select::make('status_type')
                                     ->label(__('Statuses configuration'))
                                     ->helperText(__('If custom type selected, you need to configure project specific statuses'))
@@ -132,32 +131,32 @@ class ProjectResource extends Resource
                                     ->required(),
                             ]),
                     ]),
-    
-                // New card with additional project details
+
+                // Card for additional project details
                 Forms\Components\Card::make()
                     ->schema([
                         Forms\Components\Grid::make()
-                            ->columns(2)
+                            ->columns(['default' => 1, 'md' => 2])
                             ->schema([
                                 Forms\Components\DatePicker::make('start_date')
                                     ->label(__('Start date'))
                                     ->required(),
-    
+
                                 Forms\Components\DatePicker::make('end_date')
                                     ->label(__('End date'))
                                     ->required(),
                             ]),
-    
+
                         Forms\Components\TextInput::make('project_code')
                             ->label(__('Project code'))
                             ->unique(Project::class, ignoreRecord: true)
                             ->required(),
-    
+
                         Forms\Components\TextInput::make('budget')
                             ->label(__('Project budget'))
                             ->numeric()
                             ->required(),
-    
+
                         Forms\Components\Select::make('budget_currency')
                             ->label(__('Budget currency'))
                             ->options([
@@ -166,16 +165,16 @@ class ProjectResource extends Resource
                                 'KES' => 'KES',
                             ])
                             ->required(),
-    
+
                         Forms\Components\Toggle::make('is_hrp_project')
                             ->label(__('HRP project?'))
                             ->inlineLabel(),
-    
+
                         Forms\Components\TextInput::make('hrp_code')
                             ->label(__('HRP project code'))
                             ->visible(fn ($get) => $get('is_hrp_project') === true)
                             ->required(fn ($get) => $get('is_hrp_project') === true),
-    
+
                         Forms\Components\Select::make('activity_type')
                             ->label(__('Activity type'))
                             ->options([
@@ -183,7 +182,7 @@ class ProjectResource extends Resource
                                 'other' => __('Other'),
                             ])
                             ->required(),
-    
+
                         Forms\Components\Repeater::make('activities')
                             ->label(__('Other activities'))
                             ->schema([
@@ -192,7 +191,7 @@ class ProjectResource extends Resource
                                     ->required(),
                             ])
                             ->collapsible(),
-    
+
                         Forms\Components\Select::make('project_donor')
                             ->label(__('Project donor'))
                             ->options([
@@ -201,27 +200,23 @@ class ProjectResource extends Resource
                                 'Other' => __('Other'),
                             ])
                             ->required(),
-    
+
                         Forms\Components\TextInput::make('other_donors')
                             ->label(__('Other donors'))
                             ->visible(fn ($get) => $get('project_donor') === 'Other'),
-    
+
                         Forms\Components\Toggle::make('has_partners')
                             ->label(__('Has implementing partners?'))
                             ->inlineLabel(),
-    
-                        // If you want to let users select a partner from an existing list,
-                        // you could use a select field. For now, it's a simple text input.
-                        // Adjust accordingly if you implement a Partner model later.
+
                         Forms\Components\TextInput::make('partner_id')
                             ->label(__('Partner (ID)'))
                             ->numeric()
                             ->visible(fn ($get) => $get('has_partners') === true),
                     ])
-                    ->columns(2),
+                    ->columns(['default' => 1, 'md' => 2]),
             ]);
     }
-    
 
     public static function table(Table $table): Table
     {
@@ -288,7 +283,6 @@ class ProjectResource extends Resource
                     ->options(fn() => ProjectStatus::all()->pluck('name', 'id')->toArray()),
             ])
             ->actions([
-
                 Tables\Actions\Action::make('favorite')
                     ->label('')
                     ->icon('heroicon-o-star')
