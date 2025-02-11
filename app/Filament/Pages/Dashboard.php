@@ -13,6 +13,7 @@ use App\Filament\Widgets\TicketTimeLogged;
 use App\Filament\Widgets\UserTimeLogged;
 use Filament\Pages\Dashboard as BasePage;
 use App\Filament\Widgets\GoToProjects;
+use App\Filament\Widgets\GoToReports;
 
 class Dashboard extends BasePage
 {
@@ -27,6 +28,7 @@ class Dashboard extends BasePage
     {
         return [
             GoToProjects::class,
+            GoToReports::class,
             LatestProjects::class,
             FavoriteProjects::class,
             LatestActivities::class,
