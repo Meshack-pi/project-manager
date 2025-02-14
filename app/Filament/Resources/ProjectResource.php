@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\ProjectFavorite;
 use App\Models\ProjectStatus;
 use App\Models\Ticket;
+use App\Models\Donor;
 use App\Models\User;
 use Filament\Facades\Filament;
 use Filament\Forms;
@@ -72,7 +73,7 @@ class ProjectResource extends Resource
                                                     ->maxLength(255),
 
                                                 Forms\Components\TextInput::make('ticket_prefix')
-                                                    ->label(__('Ticket prefix'))
+                                                    ->label(__('Project prefix'))
                                                     ->maxLength(3)
                                                     ->columnSpan(['default' => 1, 'md' => 2])
                                                     ->unique(Project::class, column: 'ticket_prefix', ignoreRecord: true)
@@ -166,53 +167,28 @@ class ProjectResource extends Resource
                             ])
                             ->required(),
 
-                        Forms\Components\Toggle::make('is_hrp_project')
+                            Forms\Components\Toggle::make('is_hrp_project')
                             ->label(__('HRP project?'))
-                            ->inlineLabel(),
-
+                            ->inlineLabel()
+                            ->reactive(), // Ensures the UI updates when toggled
+                        
                         Forms\Components\TextInput::make('hrp_code')
                             ->label(__('HRP project code'))
-                            ->visible(fn ($get) => $get('is_hrp_project') === true)
-                            ->required(fn ($get) => $get('is_hrp_project') === true),
+                            ->visible(fn ($get) => $get('is_hrp_project')) // Will now update immediately
+                            ->required(fn ($get) => $get('is_hrp_project'))
+                            ->reactive(), // Optional, ensures better UI response
+                        
 
-                        Forms\Components\Select::make('activity_type')
-                            ->label(__('Activity type'))
-                            ->options([
-                                'checklist' => __('Checklist'),
-                                'other' => __('Other'),
-                            ])
-                            ->required(),
-
-                        Forms\Components\Repeater::make('activities')
-                            ->label(__('Other activities'))
-                            ->schema([
-                                Forms\Components\TextInput::make('activity')
-                                    ->label(__('Activity'))
-                                    ->required(),
-                            ])
-                            ->collapsible(),
-
-                        Forms\Components\Select::make('project_donor')
-                            ->label(__('Project donor'))
-                            ->options([
-                                'Donor1' => 'Donor 1',
-                                'Donor2' => 'Donor 2',
-                                'Other' => __('Other'),
-                            ])
+                            Forms\Components\Select::make('project_donor')
+                            ->label(__('Project Donor'))
+                            ->options(Donor::pluck('name', 'id')->toArray())
+                            ->searchable()
+                            ->preload()
                             ->required(),
 
                         Forms\Components\TextInput::make('other_donors')
                             ->label(__('Other donors'))
                             ->visible(fn ($get) => $get('project_donor') === 'Other'),
-
-                        Forms\Components\Toggle::make('has_partners')
-                            ->label(__('Has implementing partners?'))
-                            ->inlineLabel(),
-
-                        Forms\Components\TextInput::make('partner_id')
-                            ->label(__('Partner (ID)'))
-                            ->numeric()
-                            ->visible(fn ($get) => $get('has_partners') === true),
                     ])
                     ->columns(['default' => 1, 'md' => 2]),
             ]);
@@ -223,11 +199,16 @@ class ProjectResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('cover')
-                    ->label(__('Cover image'))
-                    ->formatStateUsing(fn($state) => new HtmlString('
-                            <div style=\'background-image: url("' . $state . '")\'
-                                 class="w-8 h-8 bg-cover bg-center bg-no-repeat"></div>
-                        ')),
+                ->label(__('Cover Image'))
+                ->formatStateUsing(fn($state) => new HtmlString(
+                    '<div style="width: 50px; height: 50px; 
+                                background-image: url(\'' . asset("img/" . ($state ?: 'Benz.jpg')) . '\'); 
+                                background-size: cover; 
+                                background-position: center; 
+                                border-radius: 8px; 
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    </div>'
+                )),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Project name'))

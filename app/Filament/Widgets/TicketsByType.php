@@ -18,12 +18,12 @@ class TicketsByType extends DoughnutChartWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->can('List tickets');
+        return auth()->user()->can('List activites');
     }
 
     protected function getHeading(): string
     {
-        return __('Tickets by types');
+        return __('Activites by types');
     }
 
     protected function getData(): array
@@ -32,7 +32,7 @@ class TicketsByType extends DoughnutChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => __('Tickets by types'),
+                    'label' => __('Activities by types'),
                     'data' => $data->pluck('tickets_count')->toArray(),
                     'backgroundColor' => [
                         'rgba(255, 99, 132, .6)',

@@ -57,7 +57,7 @@ class Attachments extends Component implements HasForms, HasTable
         $this->form->getState();
         $this->form->fill();
         $this->emit('filesUploaded');
-        Filament::notify('success', __('Ticket attachments saved'));
+        Filament::notify('success', __('Activity attachments saved'));
     }
 
     public function filesUploaded(): void
@@ -96,7 +96,7 @@ class Attachments extends Component implements HasForms, HasTable
             DeleteAction::make()
                 ->action(function ($record) {
                     $record->delete();
-                    Filament::notify('success', __('Ticket attachment deleted'));
+                    Filament::notify('success', __('Activity attachment deleted'));
                 })
         ];
     }

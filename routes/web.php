@@ -8,7 +8,7 @@ use App\Http\Controllers\RoadMap\DataController;
 use App\Http\Controllers\Auth\OidcAuthController;
 
 // Share ticket
-Route::get('/tickets/share/{ticket:code}', function (Ticket $ticket) {
+Route::get('/activity/share/{ticket:code}', function (Ticket $ticket) {
     return redirect()->to(route('filament.resources.tickets.view', $ticket));
 })->name('filament.resources.tickets.share');
 

@@ -60,7 +60,7 @@ class TicketTypeResource extends Resource
                                 Forms\Components\Checkbox::make('is_default')
                                     ->label(__('Default type'))
                                     ->helperText(
-                                        __('If checked, this type will be automatically affected to new tickets')
+                                        __('If checked, this type will be automatically affected to new activities')
                                     ),
                             ])
                     ])

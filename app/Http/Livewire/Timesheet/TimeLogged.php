@@ -52,7 +52,7 @@ class TimeLogged extends Component implements HasTable
                 ->sortable(),
 
             Tables\Columns\TextColumn::make('ticket.name')
-                ->label(__('Ticket'))
+                ->label(__('Activity'))
                 ->sortable(),
 
             Tables\Columns\TextColumn::make('created_at')

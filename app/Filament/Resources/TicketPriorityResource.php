@@ -24,7 +24,7 @@ class TicketPriorityResource extends Resource
 
     protected static function getNavigationLabel(): string
     {
-        return __('Ticket priorities');
+        return __('Activity priorities');
     }
 
     public static function getPluralLabel(): ?string
@@ -57,7 +57,7 @@ class TicketPriorityResource extends Resource
                                 Forms\Components\Checkbox::make('is_default')
                                     ->label(__('Default priority'))
                                     ->helperText(
-                                        __('If checked, this priority will be automatically affected to new tickets')
+                                        __('If checked, this priority will be automatically affected to new activities')
                                     ),
                             ])
                     ])

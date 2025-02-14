@@ -8,13 +8,11 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
      * @return void
      */
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            // Adding new fields
             $table->date('start_date')->nullable()->after('name');
             $table->date('end_date')->nullable()->after('start_date');
             $table->string('project_code')->unique()->after('end_date');
@@ -22,12 +20,7 @@ return new class extends Migration
             $table->string('budget_currency')->nullable()->after('budget');
             $table->boolean('is_hrp_project')->default(false)->after('budget_currency');
             $table->string('hrp_code')->nullable()->after('is_hrp_project');
-            $table->string('activity_type')->nullable()->after('hrp_code');
-            $table->json('activities')->nullable()->after('activity_type');
-            $table->string('project_donor')->nullable()->after('activities');
-            $table->json('other_donors')->nullable()->after('project_donor');
-            $table->boolean('has_partners')->default(false)->after('other_donors');
-            $table->unsignedBigInteger('partner_id')->nullable();
+            $table->string('project_donor')->nullable()->after('hrp_code');
         });
     }
 

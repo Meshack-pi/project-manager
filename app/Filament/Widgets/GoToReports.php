@@ -20,7 +20,7 @@ class GoToReports extends Widget
     {
         return '
             <div class="flex flex-col items-center gap-4 p-4">
-                <img src="' . asset('img/Benz.jpg') . '" alt="Projects" class="w-full h-auto rounded-md" />
+                <img src="' . asset('img/reports.jpg') . '" alt="Projects" class="w-full h-auto rounded-md" />
                 <a href="' . url('/timesheet-dashboard') . '" class="w-full text-center block text-white bg-primary-700 hover:bg-primary-600 rounded py-2">
                     Go to to Reports
                 </a>

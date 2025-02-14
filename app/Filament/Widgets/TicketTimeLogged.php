@@ -18,12 +18,12 @@ class TicketTimeLogged extends BarChartWidget
 
     public static function canView(): bool
     {
-        return auth()->user()->can('List tickets');
+        return auth()->user()->can('List activities');
     }
 
     protected function getHeading(): string
     {
-        return __('Time logged by tickets');
+        return __('Time logged by activities');
     }
 
     protected function getData(): array
