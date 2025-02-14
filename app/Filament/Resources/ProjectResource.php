@@ -164,6 +164,7 @@ class ProjectResource extends Resource
                                 'USD' => 'USD',
                                 'EUR' => 'EUR',
                                 'KES' => 'KES',
+                                'GBP' => 'GBP',
                             ])
                             ->required(),
 

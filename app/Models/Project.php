@@ -27,7 +27,6 @@ class Project extends Model implements HasMedia
         'cover'
     ];
     protected $casts = [
-        'other_donors' => 'array',
         'is_hrp_project' => 'boolean',
         'has_partners' => 'boolean',
     ];

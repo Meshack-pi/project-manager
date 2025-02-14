@@ -42,12 +42,7 @@ return new class extends Migration
                 'budget_currency',
                 'is_hrp_project',
                 'hrp_code',
-                'activity_type',
-                'activities',
                 'project_donor',
-                'other_donors',
-                'has_partners',
-                'partner_id',
             ]);
         });
     }
