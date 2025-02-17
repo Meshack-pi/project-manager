@@ -24,7 +24,7 @@ class LatestComments extends BaseWidget
 
     public function mount(): void
     {
-        self::$heading = __('Latest tickets comments');
+        self::$heading = __('Latest activity comments');
     }
 
     public static function canView(): bool

@@ -12,6 +12,7 @@ use App\Models\Ticket;
 use App\Models\Donor;
 use App\Models\User;
 use Filament\Facades\Filament;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -20,6 +21,7 @@ use Filament\Tables;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Database\Eloquent\Model;
 
 class ProjectResource extends Resource
 {
@@ -78,7 +80,11 @@ class ProjectResource extends Resource
                                                     ->columnSpan(['default' => 1, 'md' => 2])
                                                     ->unique(Project::class, column: 'ticket_prefix', ignoreRecord: true)
                                                     ->disabled(fn($record) => $record && $record->tickets()->count() != 0)
-                                                    ->required(),
+                                                    ->reactive()
+                                                    ->required()
+                                                    ->afterStateUpdated(fn ($state, callable $set) => 
+                                                    $set('project_code', strtoupper($state . '-' . now()->year . '-' . Str::upper(Str::random(5))))
+                                                ),
                                             ]),
 
                                         Forms\Components\Select::make('owner_id')
@@ -133,7 +139,6 @@ class ProjectResource extends Resource
                             ]),
                     ]),
 
-                // Card for additional project details
                 Forms\Components\Card::make()
                     ->schema([
                         Forms\Components\Grid::make()
@@ -145,13 +150,30 @@ class ProjectResource extends Resource
 
                                 Forms\Components\DatePicker::make('end_date')
                                     ->label(__('End date'))
-                                    ->required(),
+                                    ->after('start_date')
+                                    ->required()
+                                    ->dehydrateStateUsing(fn ($state, $get) => 
+                        Carbon::parse($state)->gt(Carbon::parse($get('start_date'))) 
+                            ? $state 
+                            : null // Clears invalid date
+                    )->helperText(__('End date must be after start date.')),
                             ]),
-
-                        Forms\Components\TextInput::make('project_code')
+                                                // Duration Calculation
+                            Forms\Components\Placeholder::make('duration')
+                            ->label(__('Duration (days)'))
+                            ->content(fn ($get) => 
+                                $get('start_date') && $get('end_date') 
+                                    ? \Carbon\Carbon::parse($get('start_date'))->diffInDays(\Carbon\Carbon::parse($get('end_date'))) . ' days' 
+                                    : 'N/A'
+                            )
+                            ->reactive(),
+                            Forms\Components\TextInput::make('project_code')
                             ->label(__('Project code'))
                             ->unique(Project::class, ignoreRecord: true)
-                            ->required(),
+                            ->required()
+                            ->disabled() // Prevent manual editing
+                            ->reactive(), // Ensures real-time updates when ticket_prefix changes
+                        
 
                         Forms\Components\TextInput::make('budget')
                             ->label(__('Project budget'))
@@ -171,13 +193,17 @@ class ProjectResource extends Resource
                             Forms\Components\Toggle::make('is_hrp_project')
                             ->label(__('HRP project?'))
                             ->inlineLabel()
-                            ->reactive(), // Ensures the UI updates when toggled
+                            ->reactive() // Ensures the UI updates when toggled
+                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => 
+                            $set('hrp_code', 'HRP-' . now()->year . '-' . strtoupper($get('ticket_prefix') ?? 'XXX') . '-' . Str::upper(Str::random(4)))
+                        ),
                         
-                        Forms\Components\TextInput::make('hrp_code')
+                            Forms\Components\TextInput::make('hrp_code')
                             ->label(__('HRP project code'))
-                            ->visible(fn ($get) => $get('is_hrp_project')) // Will now update immediately
+                            ->visible(fn ($get) => $get('is_hrp_project')) // Updates immediately
                             ->required(fn ($get) => $get('is_hrp_project'))
-                            ->reactive(), // Optional, ensures better UI response
+                            ->disabled() // Prevent manual editing
+                            ->reactive(), //For real-time updates on UI
                         
 
                             Forms\Components\Select::make('project_donor')
