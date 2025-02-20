@@ -11,7 +11,7 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
-use Illuminate\Support\HtmlString;
+
 
 class UserResource extends Resource
 {
