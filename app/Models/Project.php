@@ -18,10 +18,14 @@ class Project extends Model implements HasMedia
 
     protected $fillable = [
         'name', 'description', 'status_id', 'owner_id', 'ticket_prefix',
-        'status_type', 'type','is_hrp_project', 'project_donor', 'other_donors',
-        'budget', 'budget_currency', 'hrp_code', 'project_code',
+        'status_type', 'type', 'project_donor', 'other_donors',
+        'budget', 'budget_currency', 'project_code',
         'start_date', 'end_date',
     ];
+    public function outputs()
+    {
+        return $this->hasMany(Output::class);
+    }
 
     protected $appends = [
         'cover'
@@ -34,6 +38,10 @@ class Project extends Model implements HasMedia
     public function owner(): BelongsTo
     {
         return $this->belongsTo(User::class, 'owner_id', 'id');
+    }
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
     }
 
     public function status(): BelongsTo

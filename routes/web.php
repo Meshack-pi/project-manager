@@ -12,6 +12,13 @@ Route::get('/activity/share/{ticket:code}', function (Ticket $ticket) {
     return redirect()->to(route('filament.resources.tickets.view', $ticket));
 })->name('filament.resources.tickets.share');
 
+//Permision check
+Route::middleware(['auth', 'project.access'])->group(function () {
+    Route::get('/projects/{project}/outputs', [OutputController::class, 'index']);
+    Route::get('/projects/{project}/activities', [ActivityController::class, 'index']);
+});
+
+
 // Validate an account
 Route::get('/validate-account/{user:creation_token}', function (User $user) {
     return view('validate-account', compact('user'));

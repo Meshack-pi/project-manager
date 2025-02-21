@@ -24,7 +24,7 @@ class TicketPriorityResource extends Resource
 
     protected static function getNavigationLabel(): string
     {
-        return __('Activity priorities');
+        return __('Ticket priorities');
     }
 
     public static function getPluralLabel(): ?string

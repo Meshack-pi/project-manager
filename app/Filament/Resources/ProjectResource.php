@@ -189,23 +189,6 @@ class ProjectResource extends Resource
                                 'GBP' => 'GBP',
                             ])
                             ->required(),
-
-                            Forms\Components\Toggle::make('is_hrp_project')
-                            ->label(__('HRP project?'))
-                            ->inlineLabel()
-                            ->reactive() // Ensures the UI updates when toggled
-                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => 
-                            $set('hrp_code', 'HRP-' . now()->year . '-' . strtoupper($get('ticket_prefix') ?? 'XXX') . '-' . Str::upper(Str::random(4)))
-                        ),
-                        
-                            Forms\Components\TextInput::make('hrp_code')
-                            ->label(__('HRP project code'))
-                            ->visible(fn ($get) => $get('is_hrp_project')) // Updates immediately
-                            ->required(fn ($get) => $get('is_hrp_project'))
-                            ->disabled() // Prevent manual editing
-                            ->reactive(), //For real-time updates on UI
-                        
-
                             Forms\Components\Select::make('project_donor')
                             ->label(__('Project Donor'))
                             ->options(Donor::pluck('name', 'id')->toArray())
@@ -227,9 +210,9 @@ class ProjectResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('cover')
                 ->label(__('Cover Image'))
-                ->formatStateUsing(fn($state) => new HtmlString(
-                    '<div style="width: 50px; height: 50px; 
-                                background-image: url(\'' . asset("img/" . ($state ?: 'Benz.jpg')) . '\'); 
+                ->formatStateUsing(fn($record) => new HtmlString(
+                    '<div style="width: 50px; height: 50px;
+                                background-image: url(\'' . $record->cover . '\');
                                 background-size: cover; 
                                 background-position: center; 
                                 border-radius: 8px; 

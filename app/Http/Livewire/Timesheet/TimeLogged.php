@@ -47,12 +47,8 @@ class TimeLogged extends Component implements HasTable
                 ->sortable()
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('activity.name')
-                ->label(__('Activity'))
-                ->sortable(),
-
             Tables\Columns\TextColumn::make('ticket.name')
-                ->label(__('Activity'))
+                ->label(__('Ticket'))
                 ->sortable(),
 
             Tables\Columns\TextColumn::make('created_at')

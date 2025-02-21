@@ -4,14 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Activity extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    public function project()
+    {
+        return $this->belongsTo(Project::class);
+    }
+
 
     protected $fillable = [
-        'name',
-        'description'
+        'output_id', 
+        'title', 
+        'target', 
+        'q1_progress', 
+        'total_participants', 
+        'male_participants', 
+        'female_participants', 
+        'budget', 
+        'progress_percentage', 
+        'comments'
     ];
+
+    public function output()
+    {
+        return $this->belongsTo(Output::class);
+    }
 }

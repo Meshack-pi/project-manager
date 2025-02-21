@@ -31,7 +31,7 @@ class TicketResource extends Resource
 
     protected static function getNavigationLabel(): string
     {
-        return __('Activities');
+        return __('Tickets');
     }
 
     public static function getPluralLabel(): ?string
@@ -101,7 +101,7 @@ class TicketResource extends Resource
                                             ->disabled(),
 
                                         Forms\Components\TextInput::make('name')
-                                            ->label(__('Activity name'))
+                                            ->label(__('Ticket name'))
                                             ->required()
                                             ->columnSpan(
                                                 fn($livewire) => !($livewire instanceof CreateRecord) ? 10 : 12
@@ -110,14 +110,14 @@ class TicketResource extends Resource
                                     ]),
 
                                 Forms\Components\Select::make('owner_id')
-                                    ->label(__('Activity owner'))
+                                    ->label(__('Ticket owner'))
                                     ->searchable()
                                     ->options(fn() => User::all()->pluck('name', 'id')->toArray())
                                     ->default(fn() => auth()->user()->id)
                                     ->required(),
 
                                 Forms\Components\Select::make('responsible_id')
-                                    ->label(__('Activity responsible'))
+                                    ->label(__('Ticket responsible'))
                                     ->searchable()
                                     ->options(fn() => User::all()->pluck('name', 'id')->toArray()),
 
@@ -126,7 +126,7 @@ class TicketResource extends Resource
                                     ->columnSpan(2)
                                     ->schema([
                                         Forms\Components\Select::make('status_id')
-                                            ->label(__('Activity status'))
+                                            ->label(__('Ticket status'))
                                             ->searchable()
                                             ->options(function ($get) {
                                                 $project = Project::where('id', $get('project_id'))->first();
@@ -159,14 +159,14 @@ class TicketResource extends Resource
                                             ->required(),
 
                                         Forms\Components\Select::make('type_id')
-                                            ->label(__('Activity type'))
+                                            ->label(__('Ticket type'))
                                             ->searchable()
                                             ->options(fn() => TicketType::all()->pluck('name', 'id')->toArray())
                                             ->default(fn() => TicketType::where('is_default', true)->first()?->id)
                                             ->required(),
 
                                         Forms\Components\Select::make('priority_id')
-                                            ->label(__('Activity priority'))
+                                            ->label(__('Ticket priority'))
                                             ->searchable()
                                             ->options(fn() => TicketPriority::all()->pluck('name', 'id')->toArray())
                                             ->default(fn() => TicketPriority::where('is_default', true)->first()?->id)
@@ -175,7 +175,7 @@ class TicketResource extends Resource
                             ]),
 
                         Forms\Components\RichEditor::make('content')
-                            ->label(__('Activity details'))
+                            ->label(__('Ticket details'))
                             ->required()
                             ->columnSpan(2),
 
@@ -217,7 +217,7 @@ class TicketResource extends Resource
                                             ->default(fn() => config('system.tickets.relations.default')),
 
                                         Forms\Components\Select::make('relation_id')
-                                            ->label(__('Related activity'))
+                                            ->label(__('Related Ticket'))
                                             ->required()
                                             ->searchable()
                                             ->columnSpan(2)
@@ -359,10 +359,10 @@ class TicketResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTickets::route('/activity'),
-            'create' => Pages\CreateTicket::route('/activity/create'),
-            'view' => Pages\ViewTicket::route('/activity/{record}'),
-            'edit' => Pages\EditTicket::route('/activity/{record}/edit'),
+            'index' => Pages\ListTickets::route('/'),
+            'create' => Pages\CreateTicket::route('/create'),
+            'view' => Pages\ViewTicket::route('/{record}'),
+            'edit' => Pages\EditTicket::route('/{record}/edit'),
         ];
     }
 }

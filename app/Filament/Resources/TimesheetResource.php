@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TimesheetResource\Pages;
 use App\Filament\Resources\TimesheetResource\RelationManagers;
-use App\Models\Activity;
 use App\Models\TicketHour;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
@@ -49,13 +48,6 @@ class TimesheetResource extends Resource
             ->schema([
                 Forms\Components\Card::make()
                     ->schema([
-                        Select::make('activity_id')
-                            ->label(__('Activity'))
-                            ->searchable()
-                            ->reactive()
-                            ->options(function ($get, $set) {
-                                return Activity::all()->pluck('name', 'id')->toArray();
-                            }),
                         TextInput::make('value')
                             ->label(__('Time to log'))
                             ->numeric()
@@ -87,10 +79,6 @@ class TimesheetResource extends Resource
                     ->limit(50)
                     ->sortable()
                     ->searchable(),
-
-                Tables\Columns\TextColumn::make('activity.name')
-                    ->label(__('Activity'))
-                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('ticket.name')
                     ->label(__('Ticket'))

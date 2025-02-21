@@ -19,12 +19,12 @@ class LatestTickets extends BaseWidget
 
     public function mount(): void
     {
-        self::$heading = __('Latest activities');
+        self::$heading = __('Latest Tickets');
     }
 
     public static function canView(): bool
     {
-        return auth()->user()->can('List activities');
+        return auth()->user()->can('List Tickets');
     }
 
     protected function getTableQuery(): Builder

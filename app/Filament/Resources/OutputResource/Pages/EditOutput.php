@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\ActivityResource\Pages;
+namespace App\Filament\Resources\OutputResource\Pages;
 
-use App\Filament\Resources\ActivityResource;
+use App\Filament\Resources\OutputResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditActivity extends EditRecord
+class EditOutput extends EditRecord
 {
-    protected static string $resource = ActivityResource::class;
+    protected static string $resource = OutputResource::class;
 
     protected function getActions(): array
     {

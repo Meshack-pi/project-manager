@@ -24,12 +24,12 @@ class LatestComments extends BaseWidget
 
     public function mount(): void
     {
-        self::$heading = __('Latest activity comments');
+        self::$heading = __('Latest ticket comments');
     }
 
     public static function canView(): bool
     {
-        return auth()->user()->can('List activities');
+        return auth()->user()->can('List tickets');
     }
 
     protected function isTablePaginationEnabled(): bool
@@ -58,7 +58,7 @@ class LatestComments extends BaseWidget
     {
         return [
             Tables\Columns\TextColumn::make('ticket')
-                ->label(__('Activity'))
+                ->label(__('Ticket'))
                 ->formatStateUsing(function ($state) {
                     return new HtmlString('
                     <div class="flex flex-col gap-1">
@@ -95,7 +95,7 @@ class LatestComments extends BaseWidget
                 ->icon('heroicon-s-eye')
                 ->color('secondary')
                 ->modalHeading(__('Comment details'))
-                ->modalButton(__('View activity'))
+                ->modalButton(__('View ticket'))
                 ->form([
                     RichEditor::make('content')
                         ->label(__('Content'))
