@@ -6,18 +6,14 @@ use Illuminate\Support\Facades\Route;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use App\Http\Controllers\RoadMap\DataController;
 use App\Http\Controllers\Auth\OidcAuthController;
+use App\Filament\Pages\KanbanBoard; // Ensure this class exists in the specified namespace
+use App\Filament\Pages\ScrumBoard;
+
 
 // Share ticket
 Route::get('/activity/share/{ticket:code}', function (Ticket $ticket) {
     return redirect()->to(route('filament.resources.tickets.view', $ticket));
 })->name('filament.resources.tickets.share');
-
-//Permision check
-Route::middleware(['auth', 'project.access'])->group(function () {
-    Route::get('/projects/{project}/outputs', [OutputController::class, 'index']);
-    Route::get('/projects/{project}/activities', [ActivityController::class, 'index']);
-});
-
 
 // Validate an account
 Route::get('/validate-account/{user:creation_token}', function (User $user) {

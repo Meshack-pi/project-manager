@@ -2,7 +2,6 @@
 
 namespace App\Filament\Pages;
 
-use App\Filament\Widgets\Timesheet\ActivitiesReport;
 use App\Filament\Widgets\Timesheet\MonthlyReport;
 use App\Filament\Widgets\Timesheet\WeeklyReport;
 use Filament\Pages\Page;
@@ -39,7 +38,6 @@ class TimesheetDashboard extends Page
     {
         return [
             MonthlyReport::class,
-            ActivitiesReport::class,
             WeeklyReport::class
         ];
     }

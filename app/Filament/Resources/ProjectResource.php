@@ -199,6 +199,25 @@ class ProjectResource extends Resource
                         Forms\Components\TextInput::make('other_donors')
                             ->label(__('Other donors'))
                             ->visible(fn ($get) => $get('project_donor') === 'Other'),
+                            Forms\Components\Card::make()
+                            ->schema([
+                        Forms\Components\Repeater::make('outputs')
+                            ->relationship('outputs') // Assumes a hasMany() relationship exists in Project model
+                            ->label(__('Project Outputs'))
+                            ->schema([
+                                Forms\Components\TextInput::make('title')
+                                        ->label(__('Output Title'))
+                                        ->required()
+                                        ->maxLength(255),
+                        
+                                    Forms\Components\RichEditor::make('description')
+                                        ->label(__('Output Description'))
+                                        ->required(),
+                                    ])
+                                    ->collapsible()
+                                    ->itemLabel(fn(array $state) => $state['title'] ?? 'New Output'),
+                            ]),
+                        
                     ])
                     ->columns(['default' => 1, 'md' => 2]),
             ]);
@@ -245,7 +264,6 @@ class ProjectResource extends Resource
                 Tables\Columns\TagsColumn::make('users.name')
                     ->label(__('Affected users'))
                     ->limit(2),
-
                 Tables\Columns\BadgeColumn::make('type')
                     ->enum([
                         'kanban' => __('Kanban'),
@@ -261,6 +279,17 @@ class ProjectResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->searchable(),
+                    Tables\Columns\TextColumn::make('outputs_count')
+                    ->label(__('Outputs'))
+                    ->counts('outputs')
+                    ->sortable(),
+                
+                // Tables\Columns\TextColumn::make('outputs.title')
+                //     ->label(__('Project Outputs'))
+                //     ->formatStateUsing(fn ($state) => is_array($state) ? implode('<br>', $state) : $state) // Ensure line breaks
+                //     ->html() // Enable HTML rendering for <br> tags
+                //     ->limit(50),                
+                    
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('owner_id')
@@ -327,7 +356,7 @@ class ProjectResource extends Resource
                 ])->color('secondary'),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make(),            
             ]);
     }
 
@@ -345,7 +374,7 @@ class ProjectResource extends Resource
         return [
             'index' => Pages\ListProjects::route('/'),
             'create' => Pages\CreateProject::route('/create'),
-            'view' => Pages\ViewProject::route('/{record}'),
+            'view' => Pages\ViewProject::route('/{record}/view'),
             'edit' => Pages\EditProject::route('/{record}/edit'),
         ];
     }

@@ -33,6 +33,8 @@ class Project extends Model implements HasMedia
     protected $casts = [
         'is_hrp_project' => 'boolean',
         'has_partners' => 'boolean',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
     
     public function owner(): BelongsTo
