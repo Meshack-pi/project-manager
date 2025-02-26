@@ -6,8 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use App\Http\Controllers\RoadMap\DataController;
 use App\Http\Controllers\Auth\OidcAuthController;
-use App\Filament\Pages\KanbanBoard; // Ensure this class exists in the specified namespace
-use App\Filament\Pages\ScrumBoard;
+use App\Filament\Resources\OutputResource\Pages\OutputActivities;
 
 
 // Share ticket
@@ -25,6 +24,12 @@ Route::get('/validate-account/{user:creation_token}', function (User $user) {
         DispatchServingFilamentEvent::class
     ]);
 
+    Route::name('filament.resources.outputs.')
+        ->prefix(config('filament.path'))
+        ->middleware(config('filament.middleware.base'))
+        ->group(function () {
+            Route::get('/outputs/{output}/activities', OutputActivities::class)->name('activities');
+        });
 // Login default redirection
 Route::redirect('/login-redirect', '/login')->name('login');
 

@@ -21,7 +21,6 @@ use Filament\Tables;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Database\Eloquent\Model;
 
 class ProjectResource extends Resource
 {
@@ -283,13 +282,6 @@ class ProjectResource extends Resource
                     ->label(__('Outputs'))
                     ->counts('outputs')
                     ->sortable(),
-                
-                // Tables\Columns\TextColumn::make('outputs.title')
-                //     ->label(__('Project Outputs'))
-                //     ->formatStateUsing(fn ($state) => is_array($state) ? implode('<br>', $state) : $state) // Ensure line breaks
-                //     ->html() // Enable HTML rendering for <br> tags
-                //     ->limit(50),                
-                    
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('owner_id')
