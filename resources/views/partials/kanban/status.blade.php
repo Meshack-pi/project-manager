@@ -19,7 +19,7 @@
             <a class="create-record hover:cursor-pointer"
                wire:click="createTicket"
                target="_blank">
-                <x-heroicon-o-plus class="w-4 h-4" /> {{ __('Create ticket') }}
+                <x-heroicon-o-plus class="w-4 h-4" /> {{ __('Create activity') }}
             </a>
 
             @if($ticket)
@@ -27,7 +27,7 @@
                 <div class="dialog-container">
                     <div class="dialog dialog-xl">
                         <div class="dialog-header">
-                            {{ __('Create ticket') }}
+                            {{ __('Create activity') }}
                         </div>
                         <div class="dialog-content">
                             @livewire('road-map.issue-form', ['project' => null])

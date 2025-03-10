@@ -7,13 +7,16 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use App\Http\Controllers\RoadMap\DataController;
 use App\Http\Controllers\Auth\OidcAuthController;
 use App\Filament\Resources\OutputResource\Pages\OutputActivities;
-
+use App\Http\Controllers\ProjectViewController;
+use App\Filament\Resources\ProjectResource\Pages\ProjectDetails;
 
 // Share ticket
 Route::get('/activity/share/{ticket:code}', function (Ticket $ticket) {
     return redirect()->to(route('filament.resources.tickets.view', $ticket));
 })->name('filament.resources.tickets.share');
 
+
+Route::get('/projects/{project}/viewproject', [ProjectViewController::class, 'show'])->name('projects.view');
 // Validate an account
 Route::get('/validate-account/{user:creation_token}', function (User $user) {
     return view('validate-account', compact('user'));

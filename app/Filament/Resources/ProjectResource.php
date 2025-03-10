@@ -22,6 +22,7 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
+
 class ProjectResource extends Resource
 {
     protected static ?string $model = Project::class;
@@ -368,6 +369,7 @@ class ProjectResource extends Resource
             'create' => Pages\CreateProject::route('/create'),
             'view' => Pages\ViewProject::route('/{record}/view'),
             'edit' => Pages\EditProject::route('/{record}/edit'),
+            'projectdetails' => Pages\ProjectDetails::route('/{record}/projectdetails'),
         ];
     }
 }
