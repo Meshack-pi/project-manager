@@ -22,7 +22,7 @@ class GoToProjects extends Widget
             <div class="flex flex-col items-center gap-4 p-4">
                 <img src="' . asset('img/un-aid.jpg') . '" alt="Projects" class="w-full h-auto rounded-md" />
                 <a href="' . url('/projects') . '" class="w-full text-center block text-white bg-primary-600 hover:bg-primary-700 rounded py-2">
-                    Go to Projects something change
+                    Go to Projects
                 </a>
             </div>
         ';
