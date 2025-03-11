@@ -40,13 +40,13 @@ class ActivityResource extends Resource
                         ->required(),
                 ])->collapsible(),
 
-            Forms\Components\Section::make('Participants & Progress')
+            Forms\Components\Section::make('Participants & Budget')
                 ->schema([
-                    Forms\Components\TextInput::make('q1_progress')
-                        ->label('Q1 Progress')
-                        ->numeric()
-                        ->placeholder('Enter progress for Q1')
-                        ->nullable(),
+                    // Forms\Components\TextInput::make('q1_progress')
+                    //     ->label('Q1 Progress')
+                    //     ->numeric()
+                    //     ->placeholder('Enter progress for Q1')
+                    //     ->nullable(),
                     Forms\Components\TextInput::make('total_participants')
                         ->label('Total Participants')
                         ->disabled()
@@ -77,12 +77,12 @@ class ActivityResource extends Resource
                         ->numeric()
                         ->prefix('Ksh')
                         ->nullable(),
-                    Forms\Components\TextInput::make('progress_percentage')
-                        ->label('Progress (%)')
-                        ->rules('min:0', 'max:100')
-                        ->default(0)
-                        ->suffix('%')
-                        ->required(),
+                    // Forms\Components\TextInput::make('progress_percentage')
+                    //     ->label('Progress (%)')
+                    //     ->rules('min:0', 'max:100')
+                    //     ->default(0)
+                    //     ->suffix('%')
+                    //     ->required(),
                 ])->collapsible(),
 
             Forms\Components\Section::make('Additional Comments')

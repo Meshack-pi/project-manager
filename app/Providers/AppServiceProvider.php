@@ -38,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
             Filament::registerTheme(
                 app(Vite::class)('resources/css/filament.scss'),
             );
+            Filament::registerRenderHook(
+                'panels::body.end', // This hook places content at the bottom of the page
+                fn () => view('components.footer')
+            );
         });
 
         // Register tippy styles
