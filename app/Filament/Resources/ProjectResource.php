@@ -2,13 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Exports\ProjectHoursExport;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Resources\ProjectResource\RelationManagers;
 use App\Models\Project;
 use App\Models\ProjectFavorite;
 use App\Models\ProjectStatus;
-use App\Models\Ticket;
 use App\Models\Donor;
 use App\Models\User;
 use Filament\Facades\Filament;
@@ -74,17 +72,17 @@ class ProjectResource extends Resource
                                                     ->columnSpan(['default' => 1, 'md' => 10])
                                                     ->maxLength(255),
 
-                                                Forms\Components\TextInput::make('ticket_prefix')
-                                                    ->label(__('Project prefix'))
-                                                    ->maxLength(3)
-                                                    ->columnSpan(['default' => 1, 'md' => 2])
-                                                    ->unique(Project::class, column: 'ticket_prefix', ignoreRecord: true)
-                                                    ->disabled(fn($record) => $record && $record->tickets()->count() != 0)
-                                                    ->reactive()
-                                                    ->required()
-                                                    ->afterStateUpdated(fn ($state, callable $set) => 
-                                                    $set('project_code', strtoupper($state . '-' . now()->year . '-' . Str::upper(Str::random(5))))
-                                                ),
+                                                // Forms\Components\TextInput::make('project_prefix')
+                                                //     ->label(__('Project prefix'))
+                                                //     ->maxLength(3)
+                                                //     ->columnSpan(['default' => 1, 'md' => 2])
+                                                //     ->unique(Project::class, column: 'project_prefix', ignoreRecord: true)
+                                                //     ->disabled(fn($record) => $record && $record->tickets()->count() != 0)
+                                                //     ->reactive()
+                                                //     ->required()
+                                                //     ->afterStateUpdated(fn ($state, callable $set) => 
+                                                //     $set('project_code', strtoupper($state . '-' . now()->year . '-' . Str::upper(Str::random(5))))
+                                                // ),
                                             ]),
 
                                         Forms\Components\Select::make('owner_id')
@@ -106,24 +104,6 @@ class ProjectResource extends Resource
                                     ->label(__('Project description'))
                                     ->columnSpan(['default' => 1, 'md' => 3]),
 
-                                Forms\Components\Select::make('type')
-                                    ->label(__('Project type'))
-                                    ->searchable()
-                                    ->options([
-                                        'kanban' => __('Kanban'),
-                                        'scrum' => __('Scrum'),
-                                    ])
-                                    ->reactive()
-                                    ->default(fn() => 'kanban')
-                                    ->helperText(function ($state) {
-                                        if ($state === 'kanban') {
-                                            return __('Display and move your project forward with issues on a powerful board.');
-                                        } elseif ($state === 'scrum') {
-                                            return __('Achieve your project goals with a board, backlog, and roadmap.');
-                                        }
-                                        return '';
-                                    })
-                                    ->required(),
 
                                 Forms\Components\Select::make('status_type')
                                     ->label(__('Statuses configuration'))
@@ -134,7 +114,6 @@ class ProjectResource extends Resource
                                         'custom' => __('Custom configuration'),
                                     ])
                                     ->default(fn() => 'default')
-                                    ->disabled(fn($record) => $record && $record->tickets()->count())
                                     ->required(),
                             ]),
                     ]),
@@ -172,7 +151,7 @@ class ProjectResource extends Resource
                             ->unique(Project::class, ignoreRecord: true)
                             ->required()
                             ->disabled() // Prevent manual editing
-                            ->reactive(), // Ensures real-time updates when ticket_prefix changes
+                            ->reactive(), // Ensures real-time updates when project_prefix changes
                         
 
                         Forms\Components\TextInput::make('budget')
@@ -264,15 +243,6 @@ class ProjectResource extends Resource
                 Tables\Columns\TagsColumn::make('users.name')
                     ->label(__('Affected users'))
                     ->limit(2),
-                Tables\Columns\BadgeColumn::make('type')
-                    ->enum([
-                        'kanban' => __('Kanban'),
-                        'scrum' => __('Scrum')
-                    ])
-                    ->colors([
-                        'secondary' => 'kanban',
-                        'warning' => 'scrum',
-                    ]),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Created at'))
@@ -320,33 +290,6 @@ class ProjectResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
 
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('exportLogHours')
-                        ->label(__('Export hours'))
-                        ->icon('heroicon-o-document-download')
-                        ->color('secondary')
-                        ->action(fn($record) => Excel::download(
-                            new ProjectHoursExport($record),
-                            'time_' . Str::slug($record->name) . '.csv',
-                            \Maatwebsite\Excel\Excel::CSV,
-                            ['Content-Type' => 'text/csv']
-                        )),
-                                    
-                    Tables\Actions\Action::make('kanban')
-                        ->label(
-                            fn ($record)
-                                => ($record->type === 'scrum' ? __('Scrum board') : __('Kanban board'))
-                        )
-                        ->icon('heroicon-o-view-boards')
-                        ->color('secondary')
-                        ->url(function ($record) {
-                            if ($record->type === 'scrum') {
-                                return route('filament.pages.scrum/{project}', ['project' => $record->id]);
-                            } else {
-                                return route('filament.pages.kanban/{project}', ['project' => $record->id]);
-                            }
-                        }),
-                ])->color('secondary'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),            
@@ -356,7 +299,6 @@ class ProjectResource extends Resource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\SprintsRelationManager::class,
             RelationManagers\UsersRelationManager::class,
             RelationManagers\StatusesRelationManager::class,
         ];

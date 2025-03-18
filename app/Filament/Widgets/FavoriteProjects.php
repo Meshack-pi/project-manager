@@ -30,7 +30,6 @@ class FavoriteProjects extends BaseWidget
         $favoriteProjects = auth()->user()->favoriteProjects;
         $cards = [];
         foreach ($favoriteProjects as $project) {
-            $ticketsCount = $project->tickets()->count();
             $contributorsCount = $project->contributors->count();
             $cards[] = Card::make('', new HtmlString('
                     <div class="flex items-center gap-2 -mt-2 text-lg">
@@ -45,9 +44,6 @@ class FavoriteProjects extends BaseWidget
                 ])
                 ->description(new HtmlString('
                         <div class="w-full flex items-center gap-2 mt-2 text-gray-500 font-normal">'
-                            . $ticketsCount
-                            . ' '
-                            . __($ticketsCount > 1 ? 'Tickets' : 'Ticket')
                             . ' '
                             . __('and')
                             . ' '
@@ -63,7 +59,6 @@ class FavoriteProjects extends BaseWidget
                             <span class="text-gray-300">|</span>
                             <a class="text-primary-400 hover:text-primary-500 hover:cursor-pointer"
                                href="' . route('filament.pages.kanban/{project}', ['project' => $project->id]) . '">
-                                ' . __('Tickets') . '
                             </a>
                         </div>
                     '));

@@ -17,7 +17,7 @@ class Project extends Model implements HasMedia
     use HasFactory, SoftDeletes, InteractsWithMedia;
 
     protected $fillable = [
-        'name', 'description', 'status_id', 'owner_id', 'ticket_prefix',
+        'name', 'description', 'status_id', 'owner_id',
         'status_type', 'type', 'project_donor', 'other_donors',
         'budget', 'budget_currency', 'project_code',
         'start_date', 'end_date',
@@ -54,26 +54,6 @@ class Project extends Model implements HasMedia
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'project_users', 'project_id', 'user_id')->withPivot(['role']);
-    }
-
-    public function tickets(): HasMany
-    {
-        return $this->hasMany(Ticket::class, 'project_id', 'id');
-    }
-
-    public function statuses(): HasMany
-    {
-        return $this->hasMany(TicketStatus::class, 'project_id', 'id');
-    }
-
-    public function epics(): HasMany
-    {
-        return $this->hasMany(Epic::class, 'project_id', 'id');
-    }
-
-    public function sprints(): HasMany
-    {
-        return $this->hasMany(Sprint::class, 'project_id', 'id');
     }
 
     public function epicsFirstDate(): Attribute

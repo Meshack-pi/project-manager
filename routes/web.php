@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\User;
-use App\Models\Ticket;
 use Illuminate\Support\Facades\Route;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use App\Http\Controllers\RoadMap\DataController;
@@ -10,10 +9,6 @@ use App\Filament\Resources\OutputResource\Pages\OutputActivities;
 use App\Http\Controllers\ProjectViewController;
 use App\Filament\Resources\ProjectResource\Pages\ProjectDetails;
 
-// Share ticket
-Route::get('/activity/share/{ticket:code}', function (Ticket $ticket) {
-    return redirect()->to(route('filament.resources.tickets.view', $ticket));
-})->name('filament.resources.tickets.share');
 
 
 Route::get('/projects/{project}/viewproject', [ProjectViewController::class, 'show'])->name('projects.view');

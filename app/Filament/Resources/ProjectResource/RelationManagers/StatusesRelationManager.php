@@ -1,9 +1,6 @@
 <?php
 
 namespace App\Filament\Resources\ProjectResource\RelationManagers;
-
-use App\Models\Ticket;
-use App\Models\TicketStatus;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -40,14 +37,6 @@ class StatusesRelationManager extends RelationManager
                     ->helperText(
                         __('If checked, this status will be automatically affected to new projects')
                     ),
-
-                Forms\Components\TextInput::make('order')
-                    ->label(__('Status order'))
-                    ->integer()
-                    ->default(fn($livewire) =>
-                        TicketStatus::where('project_id', $livewire->ownerRecord->id)->count() + 1
-                    )
-                    ->required(),
             ]);
     }
 
