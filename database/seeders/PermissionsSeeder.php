@@ -13,9 +13,8 @@ use Illuminate\Support\Str;
 class PermissionsSeeder extends Seeder
 {
     private array $modules = [
-        'permission', 'project', 'project status', 'role', 'ticket',
-        'ticket priority', 'ticket status', 'ticket type', 'user',
-        'activity', 'sprint'
+        'permission', 'project', 'project status', 'role','user',
+        'activity'
     ];
 
     private array $pluralActions = [

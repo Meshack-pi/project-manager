@@ -15,10 +15,10 @@ class DefaultUserSeeder extends Seeder
      */
     public function run()
     {
-        if (User::where('email', 'default@gmail.com')->count() == 0) {
+        if (User::where('email', 'admin@gmail.com')->count() == 0) {
             $user = User::create([
-                'name' => 'default admin',
-                'email' => 'default@gmail.com',
+                'name' => 'admin',
+                'email' => 'admin@gmail.com',
                 'password' => bcrypt('$£429@)!(£Tlz.kw'),
                 'email_verified_at' => now()
             ]);
