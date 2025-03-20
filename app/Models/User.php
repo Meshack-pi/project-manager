@@ -91,7 +91,6 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     {
         return $this->belongsToMany(Project::class, 'project_favorites', 'user_id', 'project_id');
     }
-
     public function socials(): HasMany
     {
         return $this->hasMany(SocialiteUser::class, 'user_id', 'id');

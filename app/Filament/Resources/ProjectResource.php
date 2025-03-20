@@ -48,9 +48,14 @@ class ProjectResource extends Resource
     {
         return $form
             ->schema([
-                // Card for basic project details
+
+
                 Forms\Components\Card::make()
                     ->schema([
+                        Forms\Components\Placeholder::make('')
+                        ->content('Project Details, Budget, and Donor')
+                        ->columnSpan('full')
+                        ->extraAttributes(['class' => 'text-lg font-bold']), // Styling the heading
                         Forms\Components\Grid::make()
                             ->columns(['default' => 1, 'md' => 3])
                             ->schema([
@@ -70,23 +75,26 @@ class ProjectResource extends Resource
                                                     ->label(__('Project name'))
                                                     ->required()
                                                     ->columnSpan(['default' => 1, 'md' => 10])
-                                                    ->maxLength(255),
-
-                                                // Forms\Components\TextInput::make('project_prefix')
-                                                //     ->label(__('Project prefix'))
-                                                //     ->maxLength(3)
-                                                //     ->columnSpan(['default' => 1, 'md' => 2])
-                                                //     ->unique(Project::class, column: 'project_prefix', ignoreRecord: true)
-                                                //     ->disabled(fn($record) => $record && $record->tickets()->count() != 0)
-                                                //     ->reactive()
-                                                //     ->required()
-                                                //     ->afterStateUpdated(fn ($state, callable $set) => 
-                                                //     $set('project_code', strtoupper($state . '-' . now()->year . '-' . Str::upper(Str::random(5))))
-                                                // ),
+                                                    ->maxLength(255)
+                                                    ->reactive()
+                                                    ->afterStateUpdated(function ($state, $set) {
+                                                        $set('project_prefix', strtoupper(Str::substr($state, 0, 3) . '-' . Str::upper(Str::random(2)) . rand(0, 9)));
+                                                    }),
+                                                Forms\Components\TextInput::make('project_prefix')
+                                                    ->label(__('Project prefix'))
+                                                    ->disabled()
+                                                    ->helperText(__('Automatically generated'))
+                                                    ->columnSpan(['default' => 2, 'md' => 1])
+                                                    ->unique(Project::class, column: 'project_prefix', ignoreRecord: true)
+                                                    ->reactive()
+                                                    ->required()
+                                                    ->afterStateUpdated(fn ($state, callable $set) => 
+                                                    $set('project_code', strtoupper($state . '-' . now()->year . '-' . Str::upper(Str::random(5))))
+                                                ),
                                             ]),
 
                                         Forms\Components\Select::make('owner_id')
-                                            ->label(__('Project owner'))
+                                            ->label(__('Project Manager'))
                                             ->searchable()
                                             ->options(fn() => User::all()->pluck('name', 'id')->toArray())
                                             ->default(fn() => auth()->user()->id)
@@ -105,32 +113,32 @@ class ProjectResource extends Resource
                                     ->columnSpan(['default' => 1, 'md' => 3]),
 
 
-                                Forms\Components\Select::make('status_type')
-                                    ->label(__('Statuses configuration'))
-                                    ->helperText(__('If custom type selected, you need to configure project specific statuses'))
-                                    ->searchable()
-                                    ->options([
-                                        'default' => __('Default'),
-                                        'custom' => __('Custom configuration'),
-                                    ])
-                                    ->default(fn() => 'default')
-                                    ->required(),
                             ]),
                     ]),
 
+                // Card for project dates and budget
+
+
                 Forms\Components\Card::make()
                     ->schema([
+                        Forms\Components\Placeholder::make('')
+                            ->content('Project Dates, Budget, and Donor')
+                            ->columnSpan('full')
+                            ->extraAttributes(['class' => 'text-lg font-bold']), // Styling the heading
+
                         Forms\Components\Grid::make()
                             ->columns(['default' => 1, 'md' => 2])
                             ->schema([
                                 Forms\Components\DatePicker::make('start_date')
                                     ->label(__('Start date'))
+                                    ->reactive()
                                     ->required(),
 
                                 Forms\Components\DatePicker::make('end_date')
                                     ->label(__('End date'))
                                     ->after('start_date')
                                     ->required()
+                                    ->reactive()
                                     ->dehydrateStateUsing(fn ($state, $get) => 
                         Carbon::parse($state)->gt(Carbon::parse($get('start_date'))) 
                             ? $state 
@@ -140,26 +148,21 @@ class ProjectResource extends Resource
                                                 // Duration Calculation
                             Forms\Components\Placeholder::make('duration')
                             ->label(__('Duration (days)'))
+                            ->reactive()
                             ->content(fn ($get) => 
                                 $get('start_date') && $get('end_date') 
                                     ? \Carbon\Carbon::parse($get('start_date'))->diffInDays(\Carbon\Carbon::parse($get('end_date'))) . ' days' 
                                     : 'N/A'
                             )
                             ->reactive(),
-                            Forms\Components\TextInput::make('project_code')
-                            ->label(__('Project code'))
-                            ->unique(Project::class, ignoreRecord: true)
-                            ->required()
-                            ->disabled() // Prevent manual editing
-                            ->reactive(), // Ensures real-time updates when project_prefix changes
+                            // Forms\Components\TextInput::make('project_code')
+                            // ->label(__('Project code'))
+                            // ->unique(Project::class, ignoreRecord: true)
+                            // ->required()
+                            // ->disabled() // Prevent manual editing
+                            // ->reactive(), // Ensures real-time updates when project_prefix changes
                         
-
-                        Forms\Components\TextInput::make('budget')
-                            ->label(__('Project budget'))
-                            ->numeric()
-                            ->required(),
-
-                        Forms\Components\Select::make('budget_currency')
+                            Forms\Components\Select::make('budget_currency')
                             ->label(__('Budget currency'))
                             ->options([
                                 'USD' => 'USD',
@@ -167,6 +170,10 @@ class ProjectResource extends Resource
                                 'KES' => 'KES',
                                 'GBP' => 'GBP',
                             ])
+                            ->required(),
+                        Forms\Components\TextInput::make('budget')
+                            ->label(__('Project budget'))
+                            ->numeric()
                             ->required(),
                             Forms\Components\Select::make('project_donor')
                             ->label(__('Project Donor'))
@@ -177,26 +184,7 @@ class ProjectResource extends Resource
 
                         Forms\Components\TextInput::make('other_donors')
                             ->label(__('Other donors'))
-                            ->visible(fn ($get) => $get('project_donor') === 'Other'),
-                            Forms\Components\Card::make()
-                            ->schema([
-                        Forms\Components\Repeater::make('outputs')
-                            ->relationship('outputs') // Assumes a hasMany() relationship exists in Project model
-                            ->label(__('Project Outputs'))
-                            ->schema([
-                                Forms\Components\TextInput::make('title')
-                                        ->label(__('Output Title'))
-                                        ->required()
-                                        ->maxLength(255),
-                        
-                                    Forms\Components\RichEditor::make('description')
-                                        ->label(__('Output Description'))
-                                        ->required(),
-                                    ])
-                                    ->collapsible()
-                                    ->itemLabel(fn(array $state) => $state['title'] ?? 'New Output'),
-                            ]),
-                        
+                            ->visible(fn ($get) => $get('project_donor') === 'Other'),                        
                     ])
                     ->columns(['default' => 1, 'md' => 2]),
             ]);
@@ -224,7 +212,7 @@ class ProjectResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('owner.name')
-                    ->label(__('Project owner'))
+                    ->label(__('Project Manager'))
                     ->sortable()
                     ->searchable(),
 
@@ -241,7 +229,7 @@ class ProjectResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TagsColumn::make('users.name')
-                    ->label(__('Affected users'))
+                    ->label(__('Project team'))
                     ->limit(2),
 
                 Tables\Columns\TextColumn::make('created_at')
@@ -256,7 +244,7 @@ class ProjectResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('owner_id')
-                    ->label(__('Owner'))
+                    ->label(__('Project Manager'))
                     ->multiple()
                     ->options(fn() => User::all()->pluck('name', 'id')->toArray()),
 
